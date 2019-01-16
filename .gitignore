@@ -6,3 +6,7 @@ submitted/
 bin/
 obj/
 ~*
+/restapi/.vs/restapi/v15/Server/sqlite3/db.lock
+/restapi/.vs/restapi/v15/Server/sqlite3/storage.ide
+/restapi/.vs/restapi/v15/Server/sqlite3/storage.ide-shm
+/restapi/.vs/restapi/v15/Server/sqlite3/storage.ide-wal

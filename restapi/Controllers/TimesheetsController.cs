@@ -373,7 +373,7 @@ namespace restapi.Controllers
         [ProducesResponseType(typeof(EmptyTimecardError), 409)]
         public IActionResult Delete(string id, [FromBody] Deletion deletion)
         {
-            Timecard timecard = Database.Find(id);
+            Timecard timecard = Database.Find(id);            
 
             if (timecard != null)
             {
