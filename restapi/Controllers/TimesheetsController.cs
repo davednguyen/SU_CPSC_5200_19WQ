@@ -384,6 +384,7 @@ namespace restapi.Controllers
 
                 var transition = new Transition(deletion, TimecardStatus.Deleted);
                 timecard.Transitions.Add(transition);
+                Database.Remove(timecard);
                 return Ok(transition);
             }
             else
