@@ -14,6 +14,9 @@ namespace restapi.Controllers
         [ProducesResponseType(typeof(IEnumerable<Timecard>), 200)]
         public IEnumerable<Timecard> GetAll()
         {
+            //var timecard1 = new Timecard(2);
+            //Database.Add(timecard1);
+            
             return Database
                 .All
                 .OrderBy(t => t.Opened);
@@ -354,6 +357,40 @@ namespace restapi.Controllers
             {
                 return NotFound();
             }
-        }        
+        }
+
+        /// <summary>
+        /// function to delete a timecard 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="deletion"></param>
+        /// <returns></returns>
+        [HttpDelete("{id}/deletion")]
+        [Produces(ContentTypes.Transition)]
+        [ProducesResponseType(typeof(Transition), 200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(typeof(InvalidStateError), 409)]
+        [ProducesResponseType(typeof(EmptyTimecardError), 409)]
+        public IActionResult Delete(string id, [FromBody] Deletion deletion)
+        {
+            Timecard timecard = Database.Find(id);
+
+            if (timecard != null)
+            {
+                if (timecard.Status != TimecardStatus.Draft && timecard.Status != TimecardStatus.Submitted)
+                {
+                    return StatusCode(409, new InvalidStateError() { });
+                }
+
+                var transition = new Transition(deletion, TimecardStatus.Deleted);
+                timecard.Transitions.Add(transition);
+                return Ok(transition);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
     }
 }

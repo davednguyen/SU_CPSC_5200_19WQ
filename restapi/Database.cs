@@ -33,5 +33,14 @@ namespace restapi
         {
             Timecards.Add(timecard.Identity.Value, timecard);
         }
+
+        /// <summary>
+        /// To remove time card from Database
+        /// </summary>
+        /// <param name="timecard"></param>
+        public static void Remove(Timecard timecard)
+        {
+            Timecards.Remove(timecard.Identity.Number);
+        }
     }
 }

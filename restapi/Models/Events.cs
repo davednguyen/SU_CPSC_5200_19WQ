@@ -26,4 +26,12 @@ namespace restapi.Models
     public class Approval : Event
     {
     }
+
+    /// <summary>
+    /// Event to delete the time card
+    /// </summary>
+    public class Deletion : Event
+    {
+        public string Reason { get; set; }
+    }
 }

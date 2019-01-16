@@ -83,6 +83,15 @@ namespace restapi.Models
                         Relationship = ActionRelationship.RecordLine,
                         Reference = $"/timesheets/{Identity.Value}/lines"
                     });
+
+                    //delete time card
+                    links.Add(new ActionLink()
+                    {
+                        Method = Method.Delete,
+                        Type = ContentTypes.Deletion,
+                        Relationship = ActionRelationship.Delete,
+                        Reference = $"/timesheets/{Identity.Value}/deletion"
+                    });
                 
                     break;
 
