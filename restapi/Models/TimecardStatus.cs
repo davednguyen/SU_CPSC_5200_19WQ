@@ -12,6 +12,8 @@ namespace restapi.Models
 
         Approved,
         
-        Deleted
+        Deleted,
+
+        Added
     }
 }

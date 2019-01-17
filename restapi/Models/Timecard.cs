@@ -101,6 +101,15 @@ namespace restapi.Models
                         Relationship = ActionRelationship.AddLine,
                         Reference = $"/timesheets/{Identity.Value}/TimecardLine"
                     });
+
+                    //Update a line to timecard
+                    links.Add(new ActionLink()
+                    {
+                        Method = Method.Patch,
+                        Type = ContentTypes.TimesheetUpdateLine,
+                        Relationship = ActionRelationship.UpdateLine,
+                        Reference = $"/timesheets/{Identity.Value}/(Enter a line number)/UpdateTimecardLine"
+                    });
                 
                     break;
 
@@ -174,13 +183,34 @@ namespace restapi.Models
             return links;
         }
 
+
         public AnnotatedTimecardLine AddLine(TimecardLine timecardLine)
         {
             var annotatedLine = new AnnotatedTimecardLine(timecardLine);
-
             Lines.Add(annotatedLine);
-
+            //get Line number after inserted into the list
+            float lineNumber = Lines.IndexOf(annotatedLine);
+            annotatedLine.LineNumber = lineNumber;
             return annotatedLine;
+        }
+
+
+        /// <summary>
+        /// Update existing line with new info
+        /// </summary>
+        /// <param name="timecardLine"></param>
+        /// <returns></returns>
+        public AnnotatedTimecardLine UpdateLine(int lineNumber, TimecardLine timecardLine)
+        {
+            var newLine = new AnnotatedTimecardLine(timecardLine);
+            var updateLine = Lines.ElementAt(lineNumber);
+            updateLine.Hours = timecardLine.Hours;
+            updateLine.Day = timecardLine.Day;
+            updateLine.Week = timecardLine.Week;
+            updateLine.Year = timecardLine.Year;
+            updateLine.Project = timecardLine.Project;
+            updateLine.Recorded = DateTime.Now;
+            return updateLine;
         }
     }
 }

@@ -410,9 +410,10 @@ namespace restapi.Controllers
             
             //logic to check for timecard first
             if(timecard != null && timecard.Status == TimecardStatus.Draft)
-            {
+            { 
+                
                var result = timecard.AddLine(timecardLine);
-                return Ok(result);
+               return Ok(result);
 
             }else if(timecard.Status == TimecardStatus.Approved || timecard.Status == TimecardStatus.Rejected || timecard.Status == TimecardStatus.Submitted)
             {
@@ -428,6 +429,44 @@ namespace restapi.Controllers
             }
             
             
+        }
+
+        /// <summary>
+        /// Update existing timecardline
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="timecardLine"></param>
+        /// <returns></returns>
+        [HttpPatch("{id}/{lineNumber}/UpdateTimecardLine")]
+        [Produces(ContentTypes.Transition)]
+        [ProducesResponseType(typeof(Transition), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(InvalidStateError), 409)]
+        public IActionResult UpdateTimecardLine(string id,string lineNumber, [FromBody] TimecardLine timecardLine)
+        {
+            Timecard timecard = Database.Find(id);
+
+            //logic to check for timecard first
+            if (timecard != null && timecard.Status == TimecardStatus.Draft)
+            {
+
+                var result = timecard.UpdateLine(Convert.ToInt32(lineNumber),timecardLine);
+                return Ok(result);
+
+            }
+            else if (timecard.Status == TimecardStatus.Approved || timecard.Status == TimecardStatus.Rejected || timecard.Status == TimecardStatus.Submitted)
+            {
+                return NotFound("no update allow");
+            }
+            else if (timecard.Status == TimecardStatus.Cancelled || timecard.Status == TimecardStatus.Deleted)
+            {
+                return NotFound("no timecard found");
+            }
+            else
+            {
+                return null;
+            }
+
         }
     }
 }

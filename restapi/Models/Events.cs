@@ -34,4 +34,12 @@ namespace restapi.Models
     {
         public string Reason { get; set; }
     }
+
+    /// <summary>
+    /// Event to show the time stamp added to timecard
+    /// </summary>
+    public class Addition: Event
+    {
+        public string Reasons { get; set; }
+    }
 }

@@ -30,5 +30,8 @@ namespace restapi.Models
 
         //Delete a time card
         public const string Deletion = "application/com.my-company.my-product.timesheet-deletion+json";
+
+        //Update existing timecardLine
+        public const string TimesheetUpdateLine = "application/com.my-company.my-product.timesheet-line+json";
     }
 }
