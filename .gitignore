@@ -10,3 +10,4 @@ obj/
 /restapi/.vs/restapi/v15/Server/sqlite3/storage.ide
 /restapi/.vs/restapi/v15/Server/sqlite3/storage.ide-shm
 /restapi/.vs/restapi/v15/Server/sqlite3/storage.ide-wal
+/restapi/.vs/restapi/v15/sqlite3

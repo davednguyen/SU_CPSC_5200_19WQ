@@ -13,5 +13,7 @@ namespace restapi.Models
         RecordLine,
 
         Delete,
+
+        AddLine
     }
 }

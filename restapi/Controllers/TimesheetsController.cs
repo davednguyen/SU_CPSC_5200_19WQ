@@ -370,7 +370,7 @@ namespace restapi.Controllers
         [ProducesResponseType(typeof(Transition), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(typeof(InvalidStateError), 409)]
-        [ProducesResponseType(typeof(EmptyTimecardError), 409)]
+        //[ProducesResponseType(typeof(EmptyTimecardError), 409)]
         public IActionResult Delete(string id, [FromBody] Deletion deletion)
         {
             Timecard timecard = Database.Find(id);            
@@ -393,5 +393,41 @@ namespace restapi.Controllers
             }
         }
 
+        /// <summary>
+        /// Insert a line to existing timecard
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="timecardLine"></param>
+        /// <returns></returns>
+        [HttpPost("{id}/TimecardLine")]
+        [Produces(ContentTypes.Transition)]
+        [ProducesResponseType(typeof(Transition),200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(InvalidStateError),409)]
+        public IActionResult TimecardLine(string id,[FromBody] TimecardLine timecardLine)
+        {
+            Timecard timecard = Database.Find(id);
+            
+            //logic to check for timecard first
+            if(timecard != null && timecard.Status == TimecardStatus.Draft)
+            {
+               var result = timecard.AddLine(timecardLine);
+                return Ok(result);
+
+            }else if(timecard.Status == TimecardStatus.Approved || timecard.Status == TimecardStatus.Rejected || timecard.Status == TimecardStatus.Submitted)
+            {
+                return NotFound("no entry allow");
+            }
+            else if (timecard.Status == TimecardStatus.Cancelled || timecard.Status == TimecardStatus.Deleted)
+            {
+                return NotFound("no timecard found");
+            }
+            else
+            {
+                return null;
+            }
+            
+            
+        }
     }
 }
