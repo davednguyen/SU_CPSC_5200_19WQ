@@ -36,10 +36,18 @@ namespace restapi.Models
     }
 
     /// <summary>
-    /// Event to show the time stamp added to timecard
+    /// Event to show the transition of added timecard line to a timecard
     /// </summary>
     public class Addition: Event
     {
-        public string Reasons { get; set; }
+        public string Reason { get; set; }
+    }
+
+    /// <summary>
+    /// Event to show the transition of updated timecard line to a timecard
+    /// </summary>
+    public class Update: Event
+    {
+        public string Reason { get; set; }
     }
 }

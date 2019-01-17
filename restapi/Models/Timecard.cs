@@ -13,24 +13,25 @@ namespace restapi.Models
             UniqueIdentifier = Guid.NewGuid();
             Identity = new TimecardIdentity();
             Lines = new List<AnnotatedTimecardLine>();
-            Transitions = new List<Transition> { 
-                new Transition(new Entered() { Resource = resource }) 
+            Transitions = new List<Transition> {
+                new Transition(new Entered() { Resource = resource })
             };
         }
 
         public int Resource { get; private set; }
-        
+
         [JsonProperty("id")]
         public TimecardIdentity Identity { get; private set; }
 
-        public TimecardStatus Status { 
-            get 
-            { 
+        public TimecardStatus Status
+        {
+            get
+            {
                 return Transitions
                     .OrderByDescending(t => t.OccurredAt)
                     .First()
                     .TransitionedTo;
-            } 
+            }
         }
 
         public DateTime Opened;
@@ -50,7 +51,7 @@ namespace restapi.Models
         public IList<Transition> Transitions { get; set; }
 
         public IList<ActionLink> Actions { get => GetActionLinks(); }
-    
+
         [JsonProperty("documentation")]
         public IList<DocumentLink> Documents { get => GetDocumentLinks(); }
 
@@ -63,21 +64,24 @@ namespace restapi.Models
             switch (Status)
             {
                 case TimecardStatus.Draft:
-                    links.Add(new ActionLink() {
+                    links.Add(new ActionLink()
+                    {
                         Method = Method.Post,
                         Type = ContentTypes.Cancellation,
                         Relationship = ActionRelationship.Cancel,
                         Reference = $"/timesheets/{Identity.Value}/cancellation"
                     });
 
-                    links.Add(new ActionLink() {
+                    links.Add(new ActionLink()
+                    {
                         Method = Method.Post,
                         Type = ContentTypes.Submittal,
                         Relationship = ActionRelationship.Submit,
                         Reference = $"/timesheets/{Identity.Value}/submittal"
                     });
 
-                    links.Add(new ActionLink() {
+                    links.Add(new ActionLink()
+                    {
                         Method = Method.Post,
                         Type = ContentTypes.TimesheetLine,
                         Relationship = ActionRelationship.RecordLine,
@@ -108,27 +112,30 @@ namespace restapi.Models
                         Method = Method.Patch,
                         Type = ContentTypes.TimesheetUpdateLine,
                         Relationship = ActionRelationship.UpdateLine,
-                        Reference = $"/timesheets/{Identity.Value}/(Enter a line number)/UpdateTimecardLine"
+                        Reference = $"/timesheets/{Identity.Value}/(LineNumber)/UpdateTimecardLine"
                     });
-                
+
                     break;
 
                 case TimecardStatus.Submitted:
-                    links.Add(new ActionLink() {
+                    links.Add(new ActionLink()
+                    {
                         Method = Method.Post,
                         Type = ContentTypes.Cancellation,
                         Relationship = ActionRelationship.Cancel,
                         Reference = $"/timesheets/{Identity.Value}/cancellation"
                     });
 
-                    links.Add(new ActionLink() {
+                    links.Add(new ActionLink()
+                    {
                         Method = Method.Post,
                         Type = ContentTypes.Rejection,
                         Relationship = ActionRelationship.Reject,
                         Reference = $"/timesheets/{Identity.Value}/rejection"
                     });
 
-                    links.Add(new ActionLink() {
+                    links.Add(new ActionLink()
+                    {
                         Method = Method.Post,
                         Type = ContentTypes.Approval,
                         Relationship = ActionRelationship.Approve,
@@ -153,7 +160,8 @@ namespace restapi.Models
         {
             var links = new List<DocumentLink>();
 
-            links.Add(new DocumentLink() {
+            links.Add(new DocumentLink()
+            {
                 Method = Method.Get,
                 Type = ContentTypes.Transitions,
                 Relationship = DocumentRelationship.Transitions,
@@ -162,7 +170,8 @@ namespace restapi.Models
 
             if (this.Lines.Count > 0)
             {
-                links.Add(new DocumentLink() {
+                links.Add(new DocumentLink()
+                {
                     Method = Method.Get,
                     Type = ContentTypes.TimesheetLine,
                     Relationship = DocumentRelationship.Lines,
@@ -172,7 +181,8 @@ namespace restapi.Models
 
             if (this.Status == TimecardStatus.Submitted)
             {
-                links.Add(new DocumentLink() {
+                links.Add(new DocumentLink()
+                {
                     Method = Method.Get,
                     Type = ContentTypes.Transitions,
                     Relationship = DocumentRelationship.Submittal,
@@ -202,13 +212,37 @@ namespace restapi.Models
         /// <returns></returns>
         public AnnotatedTimecardLine UpdateLine(int lineNumber, TimecardLine timecardLine)
         {
-            var newLine = new AnnotatedTimecardLine(timecardLine);
             var updateLine = Lines.ElementAt(lineNumber);
-            updateLine.Hours = timecardLine.Hours;
-            updateLine.Day = timecardLine.Day;
-            updateLine.Week = timecardLine.Week;
-            updateLine.Year = timecardLine.Year;
-            updateLine.Project = timecardLine.Project;
+
+            //Update hour value 
+            if (timecardLine.Hours != 0.0)
+            {
+                updateLine.Hours = timecardLine.Hours;
+            }
+
+            //Update day value
+            if(timecardLine.Day != 0)
+            { 
+              updateLine.Day = timecardLine.Day;
+            }
+
+            //Update week value
+            if(timecardLine.Week > 0) {
+                updateLine.Week = timecardLine.Week;
+            }
+            
+            //Update Year value
+            if(timecardLine.Year != 0)
+            {
+                updateLine.Year = timecardLine.Year;
+            }
+            
+            //Upate Project name
+            if(timecardLine.Project != null || timecardLine.Project != string.Empty)
+            {
+                updateLine.Project = timecardLine.Project;
+            }
+            
             updateLine.Recorded = DateTime.Now;
             return updateLine;
         }

@@ -410,8 +410,7 @@ namespace restapi.Controllers
             
             //logic to check for timecard first
             if(timecard != null && timecard.Status == TimecardStatus.Draft)
-            { 
-                
+            {
                var result = timecard.AddLine(timecardLine);
                return Ok(result);
 
@@ -449,8 +448,7 @@ namespace restapi.Controllers
             //logic to check for timecard first
             if (timecard != null && timecard.Status == TimecardStatus.Draft)
             {
-
-                var result = timecard.UpdateLine(Convert.ToInt32(lineNumber),timecardLine);
+                var result = timecard.UpdateLine(Convert.ToInt32(lineNumber), timecardLine);
                 return Ok(result);
 
             }
